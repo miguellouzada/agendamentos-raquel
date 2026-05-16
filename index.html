@@ -906,36 +906,37 @@ function mostrarNotificacao(mensagem, tipo){
         notificacao.classList.remove("mostrar");
     }, 3000);
 }
-
 function atualizarDashboard(){
 
-    // TOTAL
     document.getElementById("totalAgendamentos").textContent =
         agendamentos.length;
 
-    // DATA DE HOJE (formato estável)
-    const hoje = new Date().toISOString().split("T")[0];
+    const agora = new Date();
 
-    // FILTRA SOMENTE HOJE (100% compatível PC e mobile)
     const agHoje = agendamentos
-        .filter(item => item.data === hoje)
-        .sort((a, b) => a.hora.localeCompare(b.hora));
+        .map(item => ({
+            ...item,
+            dateObj: new Date(item.data + "T" + item.hora)
+        }))
+        .filter(item => {
+            return (
+                item.dateObj.getFullYear() === agora.getFullYear() &&
+                item.dateObj.getMonth() === agora.getMonth() &&
+                item.dateObj.getDate() === agora.getDate()
+            );
+        })
+        .sort((a, b) => a.dateObj - b.dateObj);
 
-    // ATUALIZA "HOJE"
     document.getElementById("agendamentosHoje").textContent =
         agHoje.length;
 
-    // PRÓXIMO HORÁRIO
     if (agHoje.length > 0) {
         document.getElementById("proximoHorario").textContent =
             agHoje[0].hora;
     } else {
-        document.getElementById("proximoHorario").textContent =
-            "--:--";
+        document.getElementById("proximoHorario").textContent = "--:--";
     }
 }
-
-
 abrirNovoAgendamento.addEventListener("click", () => {
     limparFormulario();
 
