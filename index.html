@@ -913,22 +913,23 @@ function atualizarDashboard(){
 
     const hoje = new Date().toISOString().split("T")[0];
 
-    const agora = new Date();
-
     const horaAtual =
         agora.getHours().toString().padStart(2,"0") +
         ":" +
         agora.getMinutes().toString().padStart(2,"0");
 
-    const agHoje = agendamentos.filter(item => {
-        const dataItem = new Date(item.data + "T" + item.hora);
+    const agora = new Date();
 
-        return (
-            dataItem.getFullYear() === agora.getFullYear() &&
-            dataItem.getMonth() === agora.getMonth() &&
-            dataItem.getDate() === agora.getDate()
-        );
-    });
+    const agHoje = agendamentos
+        .map(item => ({
+            ...item,
+            dateObj: new Date(item.data + "T" + item.hora)
+        }))
+        .filter(item => item.dateObj >= agora)
+        .filter(item => {
+            const hoje = new Date();
+            return item.dateObj.toDateString() === hoje.toDateString();
+        });
 
     document.getElementById("agendamentosHoje").textContent =
         agHoje.length;
