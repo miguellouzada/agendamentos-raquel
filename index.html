@@ -922,8 +922,12 @@ function atualizarDashboard(){
 
     const agHoje = agendamentos.filter(item => {
         const dataItem = new Date(item.data + "T" + item.hora);
-        const agora = new Date();
-        return dataItem >= agora;
+
+        return (
+            dataItem.getFullYear() === agora.getFullYear() &&
+            dataItem.getMonth() === agora.getMonth() &&
+            dataItem.getDate() === agora.getDate()
+        );
     });
 
     document.getElementById("agendamentosHoje").textContent =
