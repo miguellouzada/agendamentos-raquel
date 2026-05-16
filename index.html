@@ -906,49 +906,36 @@ function mostrarNotificacao(mensagem, tipo){
         notificacao.classList.remove("mostrar");
     }, 3000);
 }
+
 function atualizarDashboard(){
 
+    // TOTAL
     document.getElementById("totalAgendamentos").textContent =
         agendamentos.length;
 
+    // DATA DE HOJE (formato estável)
     const hoje = new Date().toISOString().split("T")[0];
 
-    const horaAtual =
-        agora.getHours().toString().padStart(2,"0") +
-        ":" +
-        agora.getMinutes().toString().padStart(2,"0");
-
-    const agora = new Date();
-
+    // FILTRA SOMENTE HOJE (100% compatível PC e mobile)
     const agHoje = agendamentos
-        .map(item => ({
-            ...item,
-            dateObj: new Date(item.data + "T" + item.hora)
-        }))
-        .filter(item => item.dateObj >= agora)
-        .filter(item => {
-            const hoje = new Date();
-            return item.dateObj.toDateString() === hoje.toDateString();
-        });
+        .filter(item => item.data === hoje)
+        .sort((a, b) => a.hora.localeCompare(b.hora));
 
+    // ATUALIZA "HOJE"
     document.getElementById("agendamentosHoje").textContent =
         agHoje.length;
 
-    if(agHoje.length > 0){
-
-        agHoje.sort((a,b) =>
-            a.hora.localeCompare(b.hora)
-        );
-
+    // PRÓXIMO HORÁRIO
+    if (agHoje.length > 0) {
         document.getElementById("proximoHorario").textContent =
             agHoje[0].hora;
-
-    }else{
-
+    } else {
         document.getElementById("proximoHorario").textContent =
             "--:--";
     }
 }
+
+
 abrirNovoAgendamento.addEventListener("click", () => {
     limparFormulario();
 
