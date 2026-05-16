@@ -945,6 +945,7 @@ function atualizarDashboard(){
     }
 }
 abrirNovoAgendamento.addEventListener("click", () => {
+    limparFormulario();
 
     cardAgendados.classList.remove("ativo");
 
@@ -1121,10 +1122,7 @@ salvarBtn.addEventListener("click", () => {
     atualizarDashboard();
     renderizarAgendamentos();
 
-    document.getElementById("nomeCliente").value = "";
-    document.getElementById("horaAgendamento").value = "";
-    document.getElementById("dataAgendamento").value = "";
-    document.getElementById("servicoAgendamento").value = "";
+    limparFormulario();
 
     card.classList.remove("ativo");
 
@@ -1151,6 +1149,18 @@ abrirAgendados.addEventListener("click", () => {
     }
 
 });
+
+function limparFormulario(){
+    document.getElementById("nomeCliente").value = "";
+    document.getElementById("horaAgendamento").value = "";
+    document.getElementById("dataAgendamento").value = "";
+    document.getElementById("servicoAgendamento").value = "";
+
+    editandoIndex = null;
+    salvarBtn.textContent = "Salvar Agendamento";
+}
+
+
 function excluirAgendamento(index){
 
     agendamentos.splice(index, 1);
@@ -1170,6 +1180,7 @@ function excluirAgendamento(index){
 }
 
 function editarAgendamento(index){
+    limparFormulario();
 
     const agendamento = agendamentos[index];
 
